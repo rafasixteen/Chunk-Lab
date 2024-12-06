@@ -1,0 +1,16 @@
+{
+    "name": "Rafasixteen.Editor.ChunkLab",
+    "rootNamespace": "Rafasixteen.Editor.ChunkLab",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
