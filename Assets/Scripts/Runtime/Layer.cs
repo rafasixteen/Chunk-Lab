@@ -8,7 +8,8 @@
         {
             return new TChunk()
             {
-                Layer = this
+                Name = typeof(TChunk).Name,
+                Layer = this,
             };
         }
     }

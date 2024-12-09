@@ -42,6 +42,28 @@ MonoBehaviour:
   <NodeGuid>k__BackingField: 7f902c3ce8cb5a14e83111be76e1247f
   <IsLeafNode>k__BackingField: 1
   <ConnectedNodes>k__BackingField: []
+--- !u!114 &-5301513131692150915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
+  m_Name: LayerB Settings
+  m_EditorClassIdentifier: 
+  _chunkSize:
+    x: 32
+    y: 32
+    z: 32
+  _enableVisualization: 1
+  _visualizationSettings: 3
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _creating: {r: 0, g: 0, b: 1, a: 1}
+  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56,3 +78,110 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Nodes>k__BackingField:
   - {fileID: -6435248499867378202}
+  - {fileID: 5691894083017415724}
+  - {fileID: 1420654440112942426}
+  - {fileID: 2068967351239735}
+--- !u!114 &2068967351239735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a35680aff98f6f4b8c414e12f6f84aa, type: 3}
+  m_Name: LayerC
+  m_EditorClassIdentifier: 
+  <LayerReference>k__BackingField:
+    _layerTypeFullName: Rafasixteen.Runtime.ChunkLab.LayerC
+  <LayerSettings>k__BackingField: {fileID: 6431010109978866113}
+  <LayerDependencies>k__BackingField: []
+  <NodePosition>k__BackingField: {x: 180.79999, y: 152}
+  <NodeGuid>k__BackingField: 0b87796947c2d0d4e93925fee94064eb
+  <IsLeafNode>k__BackingField: 0
+  <ConnectedNodes>k__BackingField: []
+--- !u!114 &1420654440112942426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a35680aff98f6f4b8c414e12f6f84aa, type: 3}
+  m_Name: LayerB
+  m_EditorClassIdentifier: 
+  <LayerReference>k__BackingField:
+    _layerTypeFullName: Rafasixteen.LayerB
+  <LayerSettings>k__BackingField: {fileID: -5301513131692150915}
+  <LayerDependencies>k__BackingField: []
+  <NodePosition>k__BackingField: {x: 288, y: -4.799999}
+  <NodeGuid>k__BackingField: 2522a27af8781b244a5c334747888b52
+  <IsLeafNode>k__BackingField: 0
+  <ConnectedNodes>k__BackingField: []
+--- !u!114 &5691894083017415724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a35680aff98f6f4b8c414e12f6f84aa, type: 3}
+  m_Name: LayerA
+  m_EditorClassIdentifier: 
+  <LayerReference>k__BackingField:
+    _layerTypeFullName: Rafasixteen.LayerA
+  <LayerSettings>k__BackingField: {fileID: 7292574073895164253}
+  <LayerDependencies>k__BackingField: []
+  <NodePosition>k__BackingField: {x: 132, y: 0}
+  <NodeGuid>k__BackingField: 55ac2c8ad6c82ff4c9ba22e46a748e77
+  <IsLeafNode>k__BackingField: 0
+  <ConnectedNodes>k__BackingField: []
+--- !u!114 &6431010109978866113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
+  m_Name: LayerC Settings
+  m_EditorClassIdentifier: 
+  _chunkSize:
+    x: 64
+    y: 64
+    z: 64
+  _enableVisualization: 1
+  _visualizationSettings: 3
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _creating: {r: 0, g: 0, b: 1, a: 1}
+  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &7292574073895164253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
+  m_Name: LayerA Settings
+  m_EditorClassIdentifier: 
+  _chunkSize:
+    x: 16
+    y: 16
+    z: 16
+  _enableVisualization: 1
+  _visualizationSettings: 3
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _creating: {r: 0, g: 0, b: 1, a: 1}
+  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}

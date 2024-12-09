@@ -6,9 +6,7 @@ namespace Rafasixteen.Runtime.ChunkLab
 {
     public abstract class ChunkBase
     {
-        private string _cachedName = default;
-
-        public string Name => _cachedName ??= GetType().Name;
+        public string Name { get; internal set; }
 
         public ChunkId Id { get; internal set; }
 

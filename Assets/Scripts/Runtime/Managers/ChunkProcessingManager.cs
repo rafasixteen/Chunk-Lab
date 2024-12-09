@@ -67,9 +67,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkProcessingManager), nameof(ProcessAwaitingUnloadingChunk)))
             {
-                using NativeArray<ChunkId> dependents = ChunkDependencyManager.GetDependents(chunkId, Allocator.Temp);
-
-                if (dependents.Length > 0)
+                if (ChunkDependencyManager.HasDependents(chunkId))
                 {
                     Debug.LogError($"Chunk {chunkId} has dependents. This should not happen");
                 }

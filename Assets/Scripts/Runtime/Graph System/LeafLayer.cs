@@ -3,9 +3,36 @@ using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
+    public class LayerC : Layer<LayerC, LayerC.Chunk>
+    {
+        public class Chunk : Chunk<Chunk, LayerC>
+        {
+            protected override void StartLoading()
+            {
+                Debug.Log($"[{Name}] StartLoading");
+                FinishLoading();
+            }
+
+            protected override void StartUnloading()
+            {
+                Debug.Log($"[{Name}] StartUnloading");
+                FinishUnloading();
+            }
+        }
+    }
+
     public sealed class LeafLayer : Layer<LeafLayer, LeafLayer.Chunk>
     {
         private int3 _lastProcessedChunkCoords = new(int.MaxValue);
+
+        protected override void OnChunkAwaitingLoading(ChunkId chunkId)
+        {
+            LayerC layer = LayerManager.GetLayer<LayerC>();
+
+            ChunkId dependencyId = new(layer.Id, chunkId.Coords, layer.Settings.ChunkSize);
+
+            ChunkDependencyManager.AddDependency(dependencyId, chunkId);
+        }
 
         internal void UpdatePosition(float3 worldPosition)
         {

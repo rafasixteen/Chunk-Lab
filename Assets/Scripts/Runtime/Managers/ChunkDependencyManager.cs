@@ -33,11 +33,12 @@ namespace Rafasixteen.Runtime.ChunkLab
             int count = _dependencies.CountValuesForKey(chunkId);
             NativeArray<ChunkId> dependencies = new(count, allocator);
 
+            int index = 0;
             if (_dependencies.TryGetFirstValue(chunkId, out ChunkId dependencyId, out NativeParallelMultiHashMapIterator<ChunkId> iterator))
             {
                 do
                 {
-                    dependencies[iterator.GetEntryIndex()] = dependencyId;
+                    dependencies[index++] = dependencyId;
                 }
                 while (_dependencies.TryGetNextValue(out dependencyId, ref iterator));
             }
@@ -53,16 +54,27 @@ namespace Rafasixteen.Runtime.ChunkLab
             int count = _dependents.CountValuesForKey(chunkId);
             NativeArray<ChunkId> dependents = new(count, allocator);
 
+            int index = 0;
             if (_dependents.TryGetFirstValue(chunkId, out ChunkId dependencyId, out NativeParallelMultiHashMapIterator<ChunkId> iterator))
             {
                 do
                 {
-                    dependents[iterator.GetEntryIndex()] = dependencyId;
+                    dependents[index++] = dependencyId;
                 }
                 while (_dependents.TryGetNextValue(out dependencyId, ref iterator));
             }
 
             return dependents;
+        }
+
+        public bool HasDependencies(ChunkId chunkId)
+        {
+            return _dependencies.ContainsKey(chunkId);
+        }
+
+        public bool HasDependents(ChunkId chunkId)
+        {
+            return _dependents.ContainsKey(chunkId);
         }
     }
 }
