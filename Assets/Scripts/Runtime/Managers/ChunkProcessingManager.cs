@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Collections;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -70,21 +71,13 @@ namespace Rafasixteen.Runtime.ChunkLab
 
                 if (dependents.Length > 0)
                 {
-                    for (int i = 0; i < dependents.Length; i++)
-                        ChunkSchedulerManager.ScheduleChunk(dependents[i], EChunkState.AwaitingUnloading);
-
-                    ChunkSchedulerManager.ScheduleChunk(chunkId, EChunkState.AwaitingUnloading);
+                    Debug.LogError($"Chunk {chunkId} has dependents. This should not happen");
                 }
                 else
                 {
                     LayerBase layer = LayerManager.GetLayer(chunkId.LayerId);
                     ChunkBase chunk = layer.GetChunk(chunkId);
                     chunk.StartUnloadingInternal();
-
-                    using NativeArray<ChunkId> dependencies = ChunkDependencyManager.GetDependencies(chunkId, Allocator.Temp);
-
-                    for (int i = 0; i < dependencies.Length; i++)
-                        ChunkSchedulerManager.ScheduleChunk(dependencies[i], EChunkState.AwaitingUnloading);
                 }
             }
         }

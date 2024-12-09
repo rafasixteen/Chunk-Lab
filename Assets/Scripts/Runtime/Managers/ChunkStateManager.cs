@@ -157,7 +157,11 @@ namespace Rafasixteen.Runtime.ChunkLab
                 using (NativeArray<ChunkId> dependencies = ChunkDependencyManager.GetDependencies(chunkId, Allocator.Temp))
                 {
                     for (int i = 0; i < dependencies.Length; i++)
-                        ChunkDependencyManager.RemoveDependency(chunkId, dependencies[i]);
+                    {
+                        ChunkId dependencyId = dependencies[i];
+                        ChunkDependencyManager.RemoveDependency(chunkId, dependencyId);
+                        ChunkSchedulerManager.ScheduleChunk(dependencyId, EChunkState.AwaitingUnloading);
+                    }
                 }
 
                 using (NativeArray<ChunkId> dependents = ChunkDependencyManager.GetDependents(chunkId, Allocator.Temp))
