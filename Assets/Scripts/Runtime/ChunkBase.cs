@@ -1,4 +1,6 @@
 ﻿using System;
+using Unity.Mathematics;
+using Unity.Mathematics.Geometry;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -10,15 +12,21 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         public ChunkId Id { get; internal set; }
 
-        public LayerBase Layer { get; internal set; }
+        public int3 Coords => Id.Coords;
+
+        public int3 Size => Id.Size;
+
+        public int3 Position => Coords * Size;
+
+        public MinMaxAABB Bounds => new(Position, Position + Size);
 
         public EChunkState State
         {
-            get => ChunkStateManager.GetState(Id);
-            private set => ChunkStateManager.SetState(Id, value);
+            get => Layer.ChunkLabManager.ChunkStateManager.GetState(Id);
+            private set => Layer.ChunkLabManager.ChunkStateManager.SetState(Id, value);
         }
 
-        internal ChunkStateManager ChunkStateManager { get; set; }
+        internal LayerBase Layer { get; set; }
 
         internal void StartLoadingInternal()
         {
@@ -71,7 +79,7 @@ namespace Rafasixteen.Runtime.ChunkLab
                 State = EChunkState.Unloaded;
             }
         }
-    
+
         protected abstract void StartLoading();
 
         protected abstract void StartUnloading();

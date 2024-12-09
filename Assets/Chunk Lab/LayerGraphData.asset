@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6997438029568101513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
+  m_Name: LeafLayer Settings
+  m_EditorClassIdentifier: 
+  _chunkSize:
+    x: 8
+    y: 8
+    z: 8
+  _enableVisualization: 1
+  _visualizationSettings: 3
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _creating: {r: 0, g: 0, b: 1, a: 1}
+  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &-6435248499867378202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a35680aff98f6f4b8c414e12f6f84aa, type: 3}
+  m_Name: LeafLayer
+  m_EditorClassIdentifier: 
+  <LayerReference>k__BackingField:
+    _layerTypeFullName: Rafasixteen.Runtime.ChunkLab.LeafLayer
+  <LayerSettings>k__BackingField: {fileID: -6997438029568101513}
+  <LayerDependencies>k__BackingField: []
+  <NodePosition>k__BackingField: {x: 0, y: 0}
+  <NodeGuid>k__BackingField: 7f902c3ce8cb5a14e83111be76e1247f
+  <IsLeafNode>k__BackingField: 1
+  <ConnectedNodes>k__BackingField: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4050e173667eff043b0bfe616a386bbb, type: 3}
+  m_Name: LayerGraphData
+  m_EditorClassIdentifier: 
+  <Nodes>k__BackingField:
+  - {fileID: -6435248499867378202}

@@ -33,7 +33,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(SetState)))
             {
-                EChunkState oldState = _states[chunkId];
+                EChunkState oldState = !_states.ContainsKey(chunkId) ? EChunkState.None : _states[chunkId];
                 _states[chunkId] = value;
                 OnChunkStateChanged(chunkId, oldState, value);
             }
