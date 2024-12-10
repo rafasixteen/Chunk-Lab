@@ -23,8 +23,6 @@ namespace Rafasixteen.Runtime.ChunkLab
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            layerGraph.CreateNodeData(typeof(LeafLayer), true);
-
             return layerGraph;
         }
 
@@ -52,6 +50,11 @@ namespace Rafasixteen.Runtime.ChunkLab
         public bool IsUsedType(LayerReference layerReference)
         {
             return Nodes.Any(nodeData => nodeData.LayerReference == layerReference);
+        }
+
+        public bool HasLeafLayer()
+        {
+            return Nodes.Any(nodeData => nodeData.IsLeafNode);
         }
 
         private static string EnsureFolderExists(string parentFolder, string childFolder)

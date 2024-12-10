@@ -16,6 +16,9 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         public void AddDependency(ChunkId dependent, ChunkId dependency)
         {
+            if (dependent.LayerId == dependency.LayerId)
+                throw new InvalidOperationException($"Cannot add dependency between chunks {dependent} and {dependency} because they belong to the same layer.");
+
             if (!HasDependencies(dependency))
                 _dependencies[dependency] = new NativeHashSet<ChunkId>(0, Allocator.Persistent);
 

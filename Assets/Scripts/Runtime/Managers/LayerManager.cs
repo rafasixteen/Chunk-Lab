@@ -19,15 +19,13 @@ namespace Rafasixteen.Runtime.ChunkLab
                 LayerBase layer = _layers[i];
                 _layersDictionary.Add(layer.Id, layer);
             }
-
-            LeafLayer = GetLayer<LeafLayer>();
         }
 
         public int Count => _layers.Count;
 
-        public LeafLayer LeafLayer { get; internal set; }
-
         public LayerBase this[int i] => _layers[i];
+
+        internal LeafLayer LeafLayer { get; private set; }
 
         public LayerBase GetLayer(LayerId layerId)
         {
@@ -69,6 +67,14 @@ namespace Rafasixteen.Runtime.ChunkLab
             layer.Settings = nodeData.LayerSettings;
             layer.Name = layer.GetType().Name;
             layer.Id = new(layer.GetType());
+
+            if (nodeData.IsLeafNode)
+            {
+                if (LeafLayer != null)
+                    throw new InvalidOperationException($"Cannot instantiate a leaf layer of type '{layer.GetType().Name}' because a leaf layer of type '{LeafLayer.GetType().Name}' already exists. The system allows only one leaf layer.");
+
+                LeafLayer = new(layer);
+            }
 
             return layer;
         }

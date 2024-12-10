@@ -27,7 +27,6 @@ namespace Rafasixteen.Editor.ChunkLab
             if (data.IsLeafNode)
             {
                 node.CreateOutputPort();
-                node.capabilities &= ~Capabilities.Deletable;
             }
             else
             {

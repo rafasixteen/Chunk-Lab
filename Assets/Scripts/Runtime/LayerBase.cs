@@ -24,6 +24,8 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         public ChunkStateManager ChunkStateManager => ChunkLabManager.ChunkStateManager;
 
+        public ChunkSchedulerManager ChunkSchedulerManager => ChunkLabManager.ChunkSchedulerManager;
+
         public LayerManager LayerManager => ChunkLabManager.LayerManager;
 
         public LayerSettings Settings { get; internal set; }

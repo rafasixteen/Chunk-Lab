@@ -54,19 +54,29 @@ namespace Rafasixteen.Editor.ChunkLab
 
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
+            bool hasLeafLayer = _graphData.HasLeafLayer();
+
             foreach (Type type in TypeCache.GetTypesDerivedFrom<LayerBase>().OrderBy(type => type.Name))
             {
                 if (type.IsAbstract)
                     continue;
 
-                DropdownMenuAction.Status status = _graphData.IsUsedType(type) ? DropdownMenuAction.Status.Disabled : DropdownMenuAction.Status.Normal;
+                bool isLeafNode = type.GetCustomAttributes(typeof(LeafLayerAttribute), true).Length > 0;
+                string category = isLeafNode ? "Add Leaf Layer" : "Add Layer";
 
-                evt.menu.AppendAction("Add Layer/" + type.Name, action =>
+                DropdownMenuAction.Status status = _graphData.IsUsedType(type)
+                    ? DropdownMenuAction.Status.Disabled
+                    : DropdownMenuAction.Status.Normal;
+
+                evt.menu.AppendAction($"{category}/{type.Name}", action =>
                 {
                     Vector2 position = contentViewContainer.WorldToLocal(action.eventInfo.localMousePosition);
-                    AddElement(CreateNode(type, position));
+                    AddElement(CreateNode(type, position, isLeafNode));
                 }, status);
             }
+
+            if (hasLeafLayer)
+                evt.menu.AppendAction("Add Leaf Layer", null, DropdownMenuAction.Status.Disabled);
 
             base.BuildContextualMenu(evt);
         }
@@ -195,9 +205,9 @@ namespace Rafasixteen.Editor.ChunkLab
             node.Data.NodePosition = node.GetPosition().position;
         }
 
-        private LayerNode CreateNode(LayerReference layerReference, Vector2 position)
+        private LayerNode CreateNode(LayerReference layerReference, Vector2 position, bool isleafNode)
         {
-            LayerNodeData nodeData = _graphData.CreateNodeData(layerReference);
+            LayerNodeData nodeData = _graphData.CreateNodeData(layerReference, isleafNode);
             nodeData.NodePosition = position;
             LayerNode node = LayerNode.Load(nodeData);
             return node;
