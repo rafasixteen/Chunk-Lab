@@ -2,7 +2,7 @@
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
-    public static class ChunkLabLogger
+    internal static class ChunkLabLogger
     {
         private static bool _enableLogger;
 

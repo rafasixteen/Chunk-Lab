@@ -7,7 +7,7 @@ namespace Rafasixteen.Runtime.ChunkLab
     /// <summary>
     /// A utility class for managing profiler samples with caching and scoped profiling.
     /// </summary>
-    public static class ProfilerUtility
+    internal static class ProfilerUtility
     {
         private static readonly DisposableAction _endSampleDisposable;
         private static readonly Dictionary<int, string> _sampleNameCache;
