@@ -90,11 +90,11 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         private void DisposeManagers()
         {
-            //_chunkDependencyManager.Dispose();
+            ChunkDependencyManager.Dispose();
             ChunkStateManager.Dispose();
             ChunkSchedulerManager.Dispose();
-            //_chunkProcessingManager.Dispose();
-            //_layerManager.Dispose();
+            //ChunkProcessingManager.Dispose();
+            //LayerManager.Dispose();
         }
 
         #endregion

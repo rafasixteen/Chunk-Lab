@@ -1,5 +1,4 @@
-﻿using Unity.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -31,23 +30,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         public static void LogError(string message)
         {
             Debug.LogError(message);
-        }
-
-        public static string ArrayToString<T>(NativeArray<T> array)
-            where T : unmanaged
-        {
-            if (!array.IsCreated || array.Length == 0)
-                return "[]";
-
-            string msg = "[";
-            for (int i = 0; i < array.Length; i++)
-            {
-                msg += array[i].ToString();
-                if (i < array.Length - 1)
-                    msg += ", ";
-            }
-            msg += "]";
-            return msg;
         }
     }
 }

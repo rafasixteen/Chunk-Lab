@@ -36,16 +36,20 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         public TLayer GetLayer<TLayer>() where TLayer : LayerBase
         {
+            return GetLayer(typeof(TLayer)) as TLayer;
+        }
+
+        public LayerBase GetLayer(LayerReference layerReference)
+        {
             for (int i = 0; i < _layers.Count; i++)
             {
                 LayerBase layer = _layers[i];
 
-                if (layer.GetType() == typeof(TLayer))
-                    return layer as TLayer;
+                if (layer.GetType() == layerReference.Type)
+                    return layer;
             }
 
-            throw new InvalidOperationException($"{typeof(TLayer)} was not instantiated.");
-
+            throw new InvalidOperationException($"{layerReference.Type.Name} was not instantiated.");
         }
 
         private List<LayerBase> InstantiateLayers(LayerGraphData graphData)

@@ -1,11 +1,12 @@
-﻿using Unity.Collections;
+﻿using System;
+using Unity.Collections;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
-    public class ChunkDependencyManager
+    public class ChunkDependencyManager : IDisposable
     {
-        private NativeParallelMultiHashMap<ChunkId, ChunkId> _dependencies;
-        private NativeParallelMultiHashMap<ChunkId, ChunkId> _dependents;
+        private NativeHashMap<ChunkId, NativeHashSet<ChunkId>> _dependencies;
+        private NativeHashMap<ChunkId, NativeHashSet<ChunkId>> _dependents;
 
         public ChunkDependencyManager()
         {
@@ -15,66 +16,92 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         public void AddDependency(ChunkId dependent, ChunkId dependency)
         {
-            _dependencies.Add(dependency, dependent);
-            _dependents.Add(dependent, dependency);
+            if (!HasDependencies(dependency))
+                _dependencies[dependency] = new NativeHashSet<ChunkId>(0, Allocator.Persistent);
+
+            if (!HasDependents(dependent))
+                _dependents[dependent] = new NativeHashSet<ChunkId>(0, Allocator.Persistent);
+
+            if (_dependencies[dependency].Add(dependent))
+                ChunkLabLogger.Log($"Successfully added dependent {dependent} to chunk {dependency}.");
+            else
+                ChunkLabLogger.LogWarning($"Duplicate dependent {dependent} added for chunk {dependency}.");
+
+            if (_dependents[dependent].Add(dependency))
+                ChunkLabLogger.Log($"Successfully added dependency {dependency} to chunk {dependent}.");
+            else
+                ChunkLabLogger.LogWarning($"Duplicate dependency {dependency} added for chunk {dependent}.");
         }
 
         public void RemoveDependency(ChunkId dependent, ChunkId dependency)
         {
-            _dependencies.Remove(dependency, dependent);
-            _dependents.Remove(dependent, dependency);
+            if (HasDependencies(dependency))
+            {
+                if (_dependencies[dependency].Remove(dependent))
+                    ChunkLabLogger.Log($"Successfully removed dependent {dependent} from chunk {dependency}.");
+                else
+                    ChunkLabLogger.LogWarning($"Trying to remove non-existent dependent {dependent} from chunk {dependency}.");
+            }
+            else
+            {
+                ChunkLabLogger.LogWarning($"Trying to remove dependent {dependent}, but chunk {dependency} does not exist.");
+            }
+
+            if (HasDependents(dependent))
+            {
+                if (_dependents[dependent].Remove(dependency))
+                    ChunkLabLogger.Log($"Successfully removed dependency {dependency} from chunk {dependent}.");
+                else
+                    ChunkLabLogger.LogWarning($"Trying to remove non-existent dependency {dependency} from chunk {dependent}.");
+            }
+            else
+            {
+                ChunkLabLogger.LogWarning($"Trying to remove dependency {dependency}, but chunk {dependent} does not exist.");
+            }
         }
 
         public NativeArray<ChunkId> GetDependencies(ChunkId chunkId, Allocator allocator)
         {
-            if (!_dependencies.ContainsKey(chunkId))
+            if (!HasDependencies(chunkId))
                 return new NativeArray<ChunkId>(0, allocator);
 
-            int count = _dependencies.CountValuesForKey(chunkId);
-            NativeArray<ChunkId> dependencies = new(count, allocator);
-
-            int index = 0;
-            if (_dependencies.TryGetFirstValue(chunkId, out ChunkId dependencyId, out NativeParallelMultiHashMapIterator<ChunkId> iterator))
-            {
-                do
-                {
-                    dependencies[index++] = dependencyId;
-                }
-                while (_dependencies.TryGetNextValue(out dependencyId, ref iterator));
-            }
-
-            return dependencies;
+            return _dependencies[chunkId].ToNativeArray(allocator);
         }
 
         public NativeArray<ChunkId> GetDependents(ChunkId chunkId, Allocator allocator)
         {
-            if (!_dependents.ContainsKey(chunkId))
+            if (!HasDependents(chunkId))
                 return new NativeArray<ChunkId>(0, allocator);
 
-            int count = _dependents.CountValuesForKey(chunkId);
-            NativeArray<ChunkId> dependents = new(count, allocator);
-
-            int index = 0;
-            if (_dependents.TryGetFirstValue(chunkId, out ChunkId dependencyId, out NativeParallelMultiHashMapIterator<ChunkId> iterator))
-            {
-                do
-                {
-                    dependents[index++] = dependencyId;
-                }
-                while (_dependents.TryGetNextValue(out dependencyId, ref iterator));
-            }
-
-            return dependents;
+            return _dependents[chunkId].ToNativeArray(allocator);
         }
 
         public bool HasDependencies(ChunkId chunkId)
         {
-            return _dependencies.ContainsKey(chunkId);
+            return _dependencies.ContainsKey(chunkId) && !_dependencies[chunkId].IsEmpty;
         }
 
         public bool HasDependents(ChunkId chunkId)
         {
-            return _dependents.ContainsKey(chunkId);
+            return _dependents.ContainsKey(chunkId) && !_dependents[chunkId].IsEmpty;
+        }
+
+        public void Dispose()
+        {
+            using (NativeArray<NativeHashSet<ChunkId>> dependencies = _dependencies.GetValueArray(Allocator.Temp))
+            {
+                for (int i = 0; i < dependencies.Length; i++)
+                    dependencies[i].Dispose();
+            }
+
+            using (NativeArray<NativeHashSet<ChunkId>> dependents = _dependents.GetValueArray(Allocator.Temp))
+            {
+                for (int i = 0; i < dependents.Length; i++)
+                    dependents[i].Dispose();
+            }
+
+            _dependencies.Dispose();
+            _dependents.Dispose();
         }
     }
 }

@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using Unity.Collections;
+using Unity.Mathematics;
+using Unity.Mathematics.Geometry;
 using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
@@ -18,6 +21,8 @@ namespace Rafasixteen.Runtime.ChunkLab
         public ChunkLabManager ChunkLabManager { get; internal set; }
 
         public ChunkDependencyManager ChunkDependencyManager => ChunkLabManager.ChunkDependencyManager;
+
+        public ChunkStateManager ChunkStateManager => ChunkLabManager.ChunkStateManager;
 
         public LayerManager LayerManager => ChunkLabManager.LayerManager;
 
@@ -72,8 +77,10 @@ namespace Rafasixteen.Runtime.ChunkLab
 
                 if (settings.HasFlag(EVisualizationSettings.ShowChunkBounds))
                 {
-                    for (int i = 0; i < _chunks.Count; i++)
-                        DrawChunk(_chunks[i]);
+                    using NativeArray<ChunkId> chunkIds = ChunkStateManager.GetChunkIdsOfLayer(Id, Allocator.Temp);
+
+                    for (int i = 0; i < chunkIds.Length; i++)
+                        DrawChunk(chunkIds[i]);
                 }
             }
         }
@@ -195,12 +202,17 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         private protected abstract ChunkBase InstantiateChunk();
 
-        private void DrawChunk(ChunkBase chunk)
+        private void DrawChunk(ChunkId chunkId)
         {
             using (ProfilerUtility.StartSample(Name, nameof(DrawChunk)))
             {
-                Gizmos.color = GetChunkColor(chunk.State);
-                Gizmos.DrawWireCube(chunk.Bounds.Center, chunk.Bounds.Extents);
+                EChunkState state = ChunkStateManager.GetState(chunkId);
+
+                int3 position = chunkId.Coords * chunkId.Size;
+                MinMaxAABB bounds = new(position, position + chunkId.Size);
+
+                Gizmos.color = GetChunkColor(state);
+                Gizmos.DrawWireCube(bounds.Center, bounds.Extents);
             }
         }
 

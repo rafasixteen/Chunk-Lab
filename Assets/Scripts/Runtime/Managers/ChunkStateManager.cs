@@ -33,7 +33,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(SetState)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(SetState)}({chunkId}, {value})");
                 _states[chunkId] = value;
                 OnChunkStateChanged(chunkId, value);
             }
@@ -43,7 +42,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(RemoveState)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(RemoveState)}({chunkId})");
+                ChunkLabLogger.Log($"Removing state of {chunkId}.");
                 _states.Remove(chunkId);
             }
         }
@@ -52,7 +51,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(HasState)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(HasState)}({chunkId})");
                 return _states.ContainsKey(chunkId);
             }
         }
@@ -61,7 +59,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(GetDeferredState)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(GetDeferredState)}({chunkId})");
                 return _deferredStates[chunkId];
             }
         }
@@ -70,7 +67,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(SetDeferredState)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(SetDeferredState)}({chunkId}, {value})");
+                ChunkLabLogger.Log($"Setting deferred state of {chunkId} to {value}.");
                 _deferredStates[chunkId] = value;
             }
         }
@@ -79,7 +76,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(RemoveDeferredState)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(RemoveDeferredState)}({chunkId})");
+                ChunkLabLogger.Log($"Removing deferred state of {chunkId}.");
                 _deferredStates.Remove(chunkId);
             }
         }
@@ -88,7 +85,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(HasDeferredState)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(HasDeferredState)}({chunkId})");
                 return _deferredStates.ContainsKey(chunkId);
             }
         }
@@ -97,8 +93,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(AreChunksLoaded)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(AreChunksLoaded)}({ChunkLabLogger.ArrayToString(chunkIds)})");
-
                 for (int i = 0; i < chunkIds.Length; i++)
                 {
                     ChunkId chunkId = chunkIds[i];
@@ -114,11 +108,27 @@ namespace Rafasixteen.Runtime.ChunkLab
             }
         }
 
+        public NativeArray<ChunkId> GetChunkIdsOfLayer(LayerId layerId, Allocator allocator)
+        {
+            NativeList<ChunkId> chunkIds = new(0, allocator);
+
+            using NativeArray<ChunkId> keyArray = _states.GetKeyArray(Allocator.Temp);
+
+            for (int i = 0; i < keyArray.Length; i++)
+            {
+                ChunkId chunkId = keyArray[i];
+
+                if (chunkId.LayerId == layerId)
+                    chunkIds.Add(chunkId);
+            }
+
+            return chunkIds.AsArray();
+        }
+
         public void Dispose()
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(Dispose)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(Dispose)}()");
                 _states.Dispose();
                 _deferredStates.Dispose();
             }
@@ -128,7 +138,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkStateChanged)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(OnChunkStateChanged)}({chunkId}, {newState})");
+                ChunkLabLogger.Log($"Chunk state of {chunkId} changed to {newState}");
 
                 switch (newState)
                 {
@@ -158,8 +168,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkLoaded)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(OnChunkLoaded)}({chunkId})");
-
                 if (HasDeferredState(chunkId))
                 {
                     ChunkSchedulerManager.ScheduleChunk(chunkId, GetDeferredState(chunkId));
@@ -175,14 +183,12 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkUnloaded)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(OnChunkUnloaded)}({chunkId})");
-
                 using (NativeArray<ChunkId> dependencies = ChunkDependencyManager.GetDependencies(chunkId, Allocator.Temp))
                 {
                     for (int i = 0; i < dependencies.Length; i++)
                     {
                         ChunkId dependencyId = dependencies[i];
-                        ChunkDependencyManager.RemoveDependency(chunkId, dependencyId);
+                        ChunkDependencyManager.RemoveDependency(dependencyId, chunkId);
                         ChunkSchedulerManager.ScheduleChunk(dependencyId, EChunkState.AwaitingUnloading);
                     }
                 }
@@ -212,8 +218,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkLoading)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(OnChunkLoading)}({chunkId})");
-
                 LayerBase layer = LayerManager.GetLayer(chunkId.LayerId);
                 layer.OnChunkLoadingInternal(chunkId);
             }
@@ -223,8 +227,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkUnloading)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(OnChunkUnloading)}({chunkId})");
-
                 LayerBase layer = LayerManager.GetLayer(chunkId.LayerId);
                 layer.OnChunkUnloadingInternal(chunkId);
             }
@@ -234,8 +236,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkAwaitingLoading)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(OnChunkAwaitingLoading)}({chunkId})");
-
                 LayerBase layer = LayerManager.GetLayer(chunkId.LayerId);
                 layer.OnChunkAwaitingLoadingInternal(chunkId);
             }
@@ -245,8 +245,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkAwaitingUnloading)))
             {
-                ChunkLabLogger.Log($"{nameof(ChunkStateManager)}.{nameof(OnChunkAwaitingUnloading)}({chunkId})");
-
                 LayerBase layer = LayerManager.GetLayer(chunkId.LayerId);
                 layer.OnChunkAwaitingUnloadingInternal(chunkId);
             }
