@@ -164,9 +164,6 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkUnloaded)))
             {
-                //ChunkSchedulerManager.ScheduleChunkDependenciesOf(chunkId, EChunkState.AwaitingUnloading);
-                //ChunkDependencyManager.RemoveAllDependencies(chunkId);
-
                 using (NativeArray<ChunkId> dependencies = ChunkDependencyManager.GetDependencies(chunkId, Allocator.Temp))
                 {
                     for (int i = 0; i < dependencies.Length; i++)
@@ -177,7 +174,11 @@ namespace Rafasixteen.Runtime.ChunkLab
                     }
                 }
 
-                ChunkDependencyManager.RemoveAllDependents(chunkId);
+                using (NativeArray<ChunkId> dependents = ChunkDependencyManager.GetDependents(chunkId, Allocator.Temp))
+                {
+                    for (int i = 0; i < dependents.Length; i++)
+                        ChunkDependencyManager.RemoveDependency(dependents[i], chunkId);
+                }
 
                 RemoveState(chunkId);
 

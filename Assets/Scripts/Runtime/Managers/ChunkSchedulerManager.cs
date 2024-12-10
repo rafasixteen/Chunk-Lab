@@ -1,6 +1,5 @@
 ﻿using System;
 using Unity.Collections;
-using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -22,7 +21,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         public ChunkDependencyManager ChunkDependencyManager { get; set; }
 
         public int Count => _queue.Count;
-        
+
         public void ScheduleChunk(ChunkId chunkId, EChunkState desiredState)
         {
             using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(ScheduleChunk)))
@@ -31,6 +30,13 @@ namespace Rafasixteen.Runtime.ChunkLab
 
                 if (IsNewChunk(chunkId))
                 {
+                    // A chunk can be AwaitingLoading and be set to AwaitingUnloading, when that happens,
+                    // that chunk may have dependencies registered, but those dependencies may have not
+                    // been loaded yet. That happens if a new chunk is scheduled to be unloaded, and once
+                    // that happens we can just ignore it here.
+                    if (desiredState == EChunkState.AwaitingUnloading)
+                        return;
+
                     ChunkStateManager.SetState(chunkId, desiredState);
                     Enqueue(chunkId);
                     return;
@@ -63,9 +69,6 @@ namespace Rafasixteen.Runtime.ChunkLab
                         }
                         break;
                     case EChunkState.AwaitingLoading:
-                        //this.ScheduleChunkDependenciesOf(chunkId, EChunkState.AwaitingUnloading);
-                        //ChunkDependencyManager.RemoveAllDependencies(chunkId);
-
                         using (NativeArray<ChunkId> dependencies = ChunkDependencyManager.GetDependencies(chunkId, Allocator.Temp))
                         {
                             for (int i = 0; i < dependencies.Length; i++)
@@ -76,7 +79,12 @@ namespace Rafasixteen.Runtime.ChunkLab
                             }
                         }
 
-                        ChunkDependencyManager.RemoveAllDependents(chunkId);
+                        using (NativeArray<ChunkId> dependents = ChunkDependencyManager.GetDependents(chunkId, Allocator.Temp))
+                        {
+                            for (int i = 0; i < dependents.Length; i++)
+                                ChunkDependencyManager.RemoveDependency(dependents[i], chunkId);
+                        }
+
                         ChunkStateManager.RemoveState(chunkId);
                         RemoveFromQueue(chunkId);
                         break;
@@ -93,7 +101,6 @@ namespace Rafasixteen.Runtime.ChunkLab
                 switch (currentState)
                 {
                     case EChunkState.AwaitingLoading:
-                        ChunkStateManager.SetState(chunkId, EChunkState.AwaitingLoading);
                         Enqueue(chunkId);
                         break;
                     case EChunkState.AwaitingUnloading:
@@ -147,10 +154,6 @@ namespace Rafasixteen.Runtime.ChunkLab
                 {
                     _queue.Enqueue(chunkId);
                     ChunkLabLogger.Log($"Enqueued {chunkId} to {ChunkStateManager.GetState(chunkId)}.");
-                }
-                else
-                {
-                    ChunkLabLogger.LogWarning($"Could not enqueue {chunkId} because it was already in the queue.");
                 }
             }
         }

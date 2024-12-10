@@ -23,7 +23,7 @@ namespace Rafasixteen.Runtime.ChunkLab
                 using NativeArray<ChunkId> dependencies = manager.GetDependencies(chunkId, Allocator.Temp);
 
                 for (int i = 0; i < dependencies.Length; i++)
-                    manager.RemoveDependency(dependencies[i], chunkId);
+                    manager.RemoveDependency(chunkId, dependencies[i]); 
             }
         }
 
@@ -52,7 +52,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             TLayer layer = manager.LayerManager.GetLayer<TLayer>();
             ChunkId dependencyId = new(layer.Id, dependencyChunkCoords, layer.Settings.ChunkSize);
-            manager.AddDependency(dependencyId, chunkId);
+            manager.AddDependency(chunkId, dependencyId);
         }
     }
 }
