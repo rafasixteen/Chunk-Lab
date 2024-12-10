@@ -16,57 +16,89 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         public ChunkStateManager ChunkStateManager { get; internal set; }
 
-        public void AddDependency(ChunkId dependent, ChunkId dependency)
+        public LayerManager LayerManager { get; internal set; }
+
+        /// <summary>
+        /// Adds a dependency relationship between two chunks.
+        /// </summary>
+        /// <param name="chunkA">The chunk that depends on <paramref name="chunkB"/>.</param>
+        /// <param name="chunkB">The chunk that <paramref name="chunkA"/> depends on.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when attempting to add a dependency where both <paramref name="chunkA"/> 
+        /// and <paramref name="chunkB"/> belong to the same layer.
+        /// </exception>
+        /// <remarks>
+        /// This method establishes a two-way relationship between the chunks:<br/>
+        /// - <paramref name="chunkB"/> will record <paramref name="chunkA"/> as one of its dependents.<br/>
+        /// - <paramref name="chunkA"/> will record <paramref name="chunkB"/> as one of its dependencies.<br/>
+        /// 
+        /// This relationship ensures that:<br/>
+        /// 1. <paramref name="chunkB"/> cannot be unloaded while it has active dependents like <paramref name="chunkA"/>.<br/>
+        /// 2. <paramref name="chunkA"/> relies on <paramref name="chunkB"/> being loaded.<br/>
+        /// </remarks>
+        public void AddDependency(ChunkId chunkA, ChunkId chunkB)
         {
             using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(AddDependency)))
             {
-                if (dependent.LayerId == dependency.LayerId)
-                    throw new InvalidOperationException($"Cannot add dependency between chunks {dependent} and {dependency} because they belong to the same layer.");
+                if (chunkA.LayerId == chunkB.LayerId)
+                    throw new InvalidOperationException($"Cannot add dependency between chunks {chunkA} and {chunkB} because they belong to the same layer.");
 
-                if (!HasDependencies(dependency))
-                    _dependencies[dependency] = new NativeHashSet<ChunkId>(0, Allocator.Persistent);
+                if (!HasDependencies(chunkB))
+                    _dependencies[chunkB] = new NativeHashSet<ChunkId>(0, Allocator.Persistent);
 
-                if (!HasDependents(dependent))
-                    _dependents[dependent] = new NativeHashSet<ChunkId>(0, Allocator.Persistent);
+                if (!HasDependents(chunkA))
+                    _dependents[chunkA] = new NativeHashSet<ChunkId>(0, Allocator.Persistent);
 
-                if (_dependencies[dependency].Add(dependent))
-                    ChunkLabLogger.Log($"Successfully added dependent {dependent} to chunk {dependency}.");
+                if (_dependencies[chunkB].Add(chunkA))
+                    ChunkLabLogger.Log($"Successfully added dependent {chunkA} to chunk {chunkB}.");
                 else
-                    ChunkLabLogger.LogWarning($"Duplicate dependent {dependent} added for chunk {dependency}.");
+                    ChunkLabLogger.LogWarning($"Duplicate dependent {chunkA} added for chunk {chunkB}.");
 
-                if (_dependents[dependent].Add(dependency))
-                    ChunkLabLogger.Log($"Successfully added dependency {dependency} to chunk {dependent}.");
+                if (_dependents[chunkA].Add(chunkB))
+                    ChunkLabLogger.Log($"Successfully added dependency {chunkB} to chunk {chunkA}.");
                 else
-                    ChunkLabLogger.LogWarning($"Duplicate dependency {dependency} added for chunk {dependent}.");
+                    ChunkLabLogger.LogWarning($"Duplicate dependency {chunkB} added for chunk {chunkA}.");
             }
         }
 
-        public void RemoveDependency(ChunkId dependent, ChunkId dependency)
+        /// <summary>
+        /// Removes a dependency relationship between two chunks.
+        /// </summary>
+        /// <param name="chunkA">The chunk that depends on <paramref name="chunkB"/>.</param>
+        /// <param name="chunkB">The chunk that <paramref name="chunkA"/> depends on.</param>
+        /// <remarks>
+        /// This method breaks the two-way relationship previously established by <see cref="AddDependency"/>:<br/>
+        /// - <paramref name="chunkB"/> will no longer consider <paramref name="chunkA"/> as one of its dependents.<br/>
+        /// - <paramref name="chunkA"/> will no longer consider <paramref name="chunkB"/> as one of its dependencies.<br/>
+        /// 
+        /// This ensures that <paramref name="chunkB"/> can now be safely unloaded if it has no other dependents.
+        /// </remarks>
+        public void RemoveDependency(ChunkId chunkA, ChunkId chunkB)
         {
             using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(RemoveDependency)))
             {
-                if (HasDependencies(dependency))
+                if (HasDependencies(chunkB))
                 {
-                    if (_dependencies[dependency].Remove(dependent))
-                        ChunkLabLogger.Log($"Successfully removed dependent {dependent} from chunk {dependency}.");
+                    if (_dependencies[chunkB].Remove(chunkA))
+                        ChunkLabLogger.Log($"Successfully removed dependent {chunkA} from chunk {chunkB}.");
                     else
-                        ChunkLabLogger.LogWarning($"Trying to remove non-existent dependent {dependent} from chunk {dependency}.");
+                        ChunkLabLogger.LogWarning($"Trying to remove non-existent dependent {chunkA} from chunk {chunkB}.");
                 }
                 else
                 {
-                    ChunkLabLogger.LogWarning($"Trying to remove dependent {dependent}, but chunk {dependency} does not exist.");
+                    ChunkLabLogger.LogWarning($"Trying to remove dependent {chunkA}, but chunk {chunkB} does not exist.");
                 }
 
-                if (HasDependents(dependent))
+                if (HasDependents(chunkA))
                 {
-                    if (_dependents[dependent].Remove(dependency))
-                        ChunkLabLogger.Log($"Successfully removed dependency {dependency} from chunk {dependent}.");
+                    if (_dependents[chunkA].Remove(chunkB))
+                        ChunkLabLogger.Log($"Successfully removed dependency {chunkB} from chunk {chunkA}.");
                     else
-                        ChunkLabLogger.LogWarning($"Trying to remove non-existent dependency {dependency} from chunk {dependent}.");
+                        ChunkLabLogger.LogWarning($"Trying to remove non-existent dependency {chunkB} from chunk {chunkA}.");
                 }
                 else
                 {
-                    ChunkLabLogger.LogWarning($"Trying to remove dependency {dependency}, but chunk {dependent} does not exist.");
+                    ChunkLabLogger.LogWarning($"Trying to remove dependency {chunkB}, but chunk {chunkA} does not exist.");
                 }
             }
         }

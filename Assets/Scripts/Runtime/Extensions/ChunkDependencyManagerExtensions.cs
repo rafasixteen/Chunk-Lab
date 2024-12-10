@@ -1,4 +1,5 @@
 ﻿using Unity.Collections;
+using Unity.Mathematics;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -45,6 +46,13 @@ namespace Rafasixteen.Runtime.ChunkLab
 
                 return true;
             }
+        }
+
+        public static void AddDependency<TLayer>(this ChunkDependencyManager manager, ChunkId chunkId, int3 dependencyChunkCoords) where TLayer : LayerBase
+        {
+            TLayer layer = manager.LayerManager.GetLayer<TLayer>();
+            ChunkId dependencyId = new(layer.Id, dependencyChunkCoords, layer.Settings.ChunkSize);
+            manager.AddDependency(dependencyId, chunkId);
         }
     }
 }
