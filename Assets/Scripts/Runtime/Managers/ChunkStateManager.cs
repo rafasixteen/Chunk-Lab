@@ -89,25 +89,6 @@ namespace Rafasixteen.Runtime.ChunkLab
             }
         }
 
-        public bool AreChunksLoaded(NativeArray<ChunkId> chunkIds)
-        {
-            using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(AreChunksLoaded)))
-            {
-                for (int i = 0; i < chunkIds.Length; i++)
-                {
-                    ChunkId chunkId = chunkIds[i];
-
-                    if (!HasState(chunkId))
-                        return false;
-
-                    if (GetState(chunkIds[i]) != EChunkState.Loaded)
-                        return false;
-                }
-
-                return true;
-            }
-        }
-
         public NativeArray<ChunkId> GetChunkIdsOfLayer(LayerId layerId, Allocator allocator)
         {
             NativeList<ChunkId> chunkIds = new(0, allocator);
@@ -138,7 +119,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkStateChanged)))
             {
-                ChunkLabLogger.Log($"Chunk state of {chunkId} changed to {newState}");
+                ChunkLabLogger.Log($"Chunk state of {chunkId} changed to {newState}.");
 
                 switch (newState)
                 {
@@ -183,6 +164,9 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkStateManager), nameof(OnChunkUnloaded)))
             {
+                //ChunkSchedulerManager.ScheduleChunkDependenciesOf(chunkId, EChunkState.AwaitingUnloading);
+                //ChunkDependencyManager.RemoveAllDependencies(chunkId);
+
                 using (NativeArray<ChunkId> dependencies = ChunkDependencyManager.GetDependencies(chunkId, Allocator.Temp))
                 {
                     for (int i = 0; i < dependencies.Length; i++)
@@ -193,11 +177,7 @@ namespace Rafasixteen.Runtime.ChunkLab
                     }
                 }
 
-                using (NativeArray<ChunkId> dependents = ChunkDependencyManager.GetDependents(chunkId, Allocator.Temp))
-                {
-                    for (int i = 0; i < dependents.Length; i++)
-                        ChunkDependencyManager.RemoveDependency(dependents[i], chunkId);
-                }
+                ChunkDependencyManager.RemoveAllDependents(chunkId);
 
                 RemoveState(chunkId);
 

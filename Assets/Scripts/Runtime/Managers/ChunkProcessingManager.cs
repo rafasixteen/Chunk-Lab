@@ -1,5 +1,4 @@
 ﻿using System;
-using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -42,9 +41,7 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkProcessingManager), nameof(ProcessAwaitingLoadingChunk)))
             {
-                using NativeArray<ChunkId> dependencies = ChunkDependencyManager.GetDependencies(chunkId, Allocator.Temp);
-
-                if (ChunkStateManager.AreChunksLoaded(dependencies))
+                if (ChunkDependencyManager.AreDependenciesLoaded(chunkId))
                 {
                     LayerBase layer = LayerManager.GetLayer(chunkId.LayerId);
 
@@ -56,9 +53,7 @@ namespace Rafasixteen.Runtime.ChunkLab
                 else
                 {
                     ChunkSchedulerManager.ScheduleChunk(chunkId, EChunkState.AwaitingLoading);
-
-                    for (int i = 0; i < dependencies.Length; i++)
-                        ChunkSchedulerManager.ScheduleChunk(dependencies[i], EChunkState.AwaitingLoading);
+                    ChunkSchedulerManager.ScheduleChunkDependenciesOf(chunkId, EChunkState.AwaitingLoading);
                 }
             }
         }
@@ -67,9 +62,15 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkProcessingManager), nameof(ProcessAwaitingUnloadingChunk)))
             {
+                // If this chunk is still waiting in the queue to be unloaded, and a
+                // another chunk adds this chunk as a dependency, once this chunk is
+                // processed, it will have dependents. We must remove this chunk from
+                // the queue when a dependent is added.
                 if (ChunkDependencyManager.HasDependents(chunkId))
                 {
-                    Debug.LogError($"Chunk {chunkId} has dependents. This should not happen");
+                    // I think we can just ignore this, because this chunk will be marked as NotLoaded
+                    // and then the chunk that depends on this chunk will just schedule this chunk for
+                    // loading again.
                 }
                 else
                 {

@@ -8,67 +8,100 @@ namespace Rafasixteen.Runtime.ChunkLab
     {
         private NativeQueue<ChunkId> _queue;
         private NativeHashSet<ChunkId> _inQueue;
+        private NativeHashSet<ChunkId> _removedFromQueue;
 
         public ChunkSchedulerManager()
         {
             _queue = new(Allocator.Persistent);
             _inQueue = new(1, Allocator.Persistent);
+            _removedFromQueue = new(1, Allocator.Persistent);
         }
 
         public ChunkStateManager ChunkStateManager { get; set; }
 
-        public int Count => _queue.Count;
+        public ChunkDependencyManager ChunkDependencyManager { get; set; }
 
+        public int Count => _queue.Count;
+        
         public void ScheduleChunk(ChunkId chunkId, EChunkState desiredState)
         {
             using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(ScheduleChunk)))
             {
-                if (desiredState != EChunkState.AwaitingLoading && desiredState != EChunkState.AwaitingUnloading)
-                    throw new ArgumentException($"Cannot schedule a chunk to {desiredState}. Only {EChunkState.AwaitingLoading} or {EChunkState.AwaitingUnloading} are allowed.");
+                ThrowIfNotAnyAwaitingState(desiredState);
 
-                // If the chunk is still in the queue it means it's still waiting
-                // to be loaded or unloaded, so we just update it's state.
-                if (_inQueue.Contains(chunkId))
+                if (IsNewChunk(chunkId))
                 {
                     ChunkStateManager.SetState(chunkId, desiredState);
-                    return;
-                }
-
-                // If we got here it means the chunk is not in the queue, and if it
-                // doesn't have a state, it means it's a completely new chunk, so we
-                // just add it to the queue and set it's state for later processing.
-                if (!ChunkStateManager.HasState(chunkId))
-                {
                     Enqueue(chunkId);
-                    ChunkStateManager.SetState(chunkId, desiredState);
                     return;
                 }
 
                 EChunkState currentState = ChunkStateManager.GetState(chunkId);
 
-                // And if we're here it means the chunk can be in either of the following states:
-                // Loaded, Loading or Unloading.
+                if (desiredState == EChunkState.AwaitingLoading)
+                    HandleTransitionToAwaitingLoading(chunkId, currentState);
+                else
+                    HandleTransitionToAwaitingUnloading(chunkId, currentState);
+            }
+        }
 
-                // If this chunk is Loading or Unloading we have to wait for it's current operation
-                // (Loading or Unloading) to finish before we can schedule it to the desired state.
-
-                // So we add it to the deferred states and once the current operation finishes
-                // we'll schedule it to the current deferred state.
-                if (currentState == EChunkState.Loading || currentState == EChunkState.Unloading)
+        private void HandleTransitionToAwaitingUnloading(ChunkId chunkId, EChunkState currentState)
+        {
+            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(HandleTransitionToAwaitingUnloading)))
+            {
+                switch (currentState)
                 {
-                    ChunkStateManager.SetDeferredState(chunkId, desiredState);
-                    return;
-                }
+                    case EChunkState.Loaded:
+                        if (!ChunkDependencyManager.HasDependents(chunkId))
+                        {
+                            ChunkStateManager.SetState(chunkId, EChunkState.AwaitingUnloading);
+                            Enqueue(chunkId);
+                        }
+                        else
+                        {
+                            ChunkLabLogger.LogWarning($"Chunk {chunkId} cannot transition from {currentState} to {EChunkState.AwaitingUnloading} because it has dependents. Ensure all dependents are unloaded or restructured.");
+                        }
+                        break;
+                    case EChunkState.AwaitingLoading:
+                        //this.ScheduleChunkDependenciesOf(chunkId, EChunkState.AwaitingUnloading);
+                        //ChunkDependencyManager.RemoveAllDependencies(chunkId);
 
-                // Chunk is already loaded and we want to load it again, so we just ignore it.
-                if (currentState == EChunkState.Loaded && desiredState == EChunkState.AwaitingLoading)
+                        using (NativeArray<ChunkId> dependencies = ChunkDependencyManager.GetDependencies(chunkId, Allocator.Temp))
+                        {
+                            for (int i = 0; i < dependencies.Length; i++)
+                            {
+                                ChunkId dependencyId = dependencies[i];
+                                ChunkDependencyManager.RemoveDependency(dependencyId, chunkId);
+                                ScheduleChunk(dependencyId, EChunkState.AwaitingUnloading);
+                            }
+                        }
+
+                        ChunkDependencyManager.RemoveAllDependents(chunkId);
+                        ChunkStateManager.RemoveState(chunkId);
+                        RemoveFromQueue(chunkId);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Cannot transition from {currentState} to {EChunkState.AwaitingUnloading}.");
+                }
+            }
+        }
+
+        private void HandleTransitionToAwaitingLoading(ChunkId chunkId, EChunkState currentState)
+        {
+            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(HandleTransitionToAwaitingLoading)))
+            {
+                switch (currentState)
                 {
-                    Debug.LogWarning($"Chunk {chunkId} is already loaded and we're trying to load it again.");
-                    return;
+                    case EChunkState.AwaitingLoading:
+                        ChunkStateManager.SetState(chunkId, EChunkState.AwaitingLoading);
+                        Enqueue(chunkId);
+                        break;
+                    case EChunkState.AwaitingUnloading:
+                        ChunkStateManager.SetState(chunkId, EChunkState.AwaitingLoading);
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Cannot transition from {currentState} to {EChunkState.AwaitingLoading}.");
                 }
-
-                Enqueue(chunkId);
-                ChunkStateManager.SetState(chunkId, desiredState);
             }
         }
 
@@ -76,9 +109,15 @@ namespace Rafasixteen.Runtime.ChunkLab
         {
             using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(Dequeue)))
             {
-                ChunkId chunkId = _queue.Dequeue();
-                _inQueue.Remove(chunkId);
-                return chunkId;
+                while (_queue.Count > 0)
+                {
+                    ChunkId chunkId = _queue.Dequeue();
+
+                    if (_inQueue.Remove(chunkId))
+                        return chunkId;
+                }
+
+                throw new InvalidOperationException("No chunk available in the queue.");
             }
         }
 
@@ -88,15 +127,51 @@ namespace Rafasixteen.Runtime.ChunkLab
             {
                 _queue.Dispose();
                 _inQueue.Dispose();
+                _removedFromQueue.Dispose();
+            }
+        }
+
+        private bool IsNewChunk(ChunkId chunkId)
+        {
+            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(IsNewChunk)))
+            {
+                return !_inQueue.Contains(chunkId) && !ChunkStateManager.HasState(chunkId);
             }
         }
 
         private void Enqueue(ChunkId chunkId)
         {
-            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(Dispose)))
+            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(Enqueue)))
             {
-                _queue.Enqueue(chunkId);
-                _inQueue.Add(chunkId);
+                if (_inQueue.Add(chunkId))
+                {
+                    _queue.Enqueue(chunkId);
+                    ChunkLabLogger.Log($"Enqueued {chunkId} to {ChunkStateManager.GetState(chunkId)}.");
+                }
+                else
+                {
+                    ChunkLabLogger.LogWarning($"Could not enqueue {chunkId} because it was already in the queue.");
+                }
+            }
+        }
+
+        private void RemoveFromQueue(ChunkId chunkId)
+        {
+            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(RemoveFromQueue)))
+            {
+                if (_inQueue.Remove(chunkId))
+                    ChunkLabLogger.Log($"Chunk {chunkId} removed from the queue.");
+                else
+                    ChunkLabLogger.LogWarning($"Chunk {chunkId} could not be removed from the queue because it was never in the queue.");
+            }
+        }
+
+        private void ThrowIfNotAnyAwaitingState(EChunkState state)
+        {
+            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(ThrowIfNotAnyAwaitingState)))
+            {
+                if (state != EChunkState.AwaitingLoading && state != EChunkState.AwaitingUnloading)
+                    throw new ArgumentException($"Cannot schedule a chunk to {state}. Only {EChunkState.AwaitingLoading} or {EChunkState.AwaitingUnloading} are allowed.");
             }
         }
     }

@@ -76,11 +76,14 @@ namespace Rafasixteen.Runtime.ChunkLab
             ChunkProcessingManager = new();
             LayerManager = new(_layerGraphData);
 
+            ChunkDependencyManager.ChunkStateManager = ChunkStateManager;
+
             ChunkStateManager.ChunkSchedulerManager = ChunkSchedulerManager;
             ChunkStateManager.ChunkDependencyManager = ChunkDependencyManager;
             ChunkStateManager.LayerManager = LayerManager;
 
             ChunkSchedulerManager.ChunkStateManager = ChunkStateManager;
+            ChunkSchedulerManager.ChunkDependencyManager = ChunkDependencyManager;
 
             ChunkProcessingManager.ChunkSchedulerManager = ChunkSchedulerManager;
             ChunkProcessingManager.ChunkStateManager = ChunkStateManager;

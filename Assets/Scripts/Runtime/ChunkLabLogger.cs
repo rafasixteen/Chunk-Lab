@@ -8,7 +8,7 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         static ChunkLabLogger()
         {
-            _enableLogger = true;
+            _enableLogger = false;
         }
 
         public static bool EnableProfiler
