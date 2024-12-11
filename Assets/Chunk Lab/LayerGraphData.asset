@@ -15,8 +15,7 @@ MonoBehaviour:
   <LayerReference>k__BackingField:
     _layerTypeFullName: Rafasixteen.LayerD
   <LayerSettings>k__BackingField: {fileID: 873612416405325771}
-  <LayerDependencies>k__BackingField: []
-  <NodePosition>k__BackingField: {x: 584, y: 98.4}
+  <NodePosition>k__BackingField: {x: 525, y: -18}
   <NodeGuid>k__BackingField: a6503ac2a3f09cd4f9f579baddb962e0
   <IsLeafNode>k__BackingField: 0
   <ConnectedNodes>k__BackingField: []
@@ -79,8 +78,7 @@ MonoBehaviour:
   <LayerReference>k__BackingField:
     _layerTypeFullName: Rafasixteen.LayerB
   <LayerSettings>k__BackingField: {fileID: 1515590328771800467}
-  <LayerDependencies>k__BackingField: []
-  <NodePosition>k__BackingField: {x: 221.60004, y: 97.6}
+  <NodePosition>k__BackingField: {x: 209, y: -18}
   <NodeGuid>k__BackingField: fceecd76bc928e04ca6b3026bfd322bc
   <IsLeafNode>k__BackingField: 0
   <ConnectedNodes>k__BackingField: []
@@ -160,8 +158,7 @@ MonoBehaviour:
   <LayerReference>k__BackingField:
     _layerTypeFullName: Rafasixteen.LayerA
   <LayerSettings>k__BackingField: {fileID: -4911550688618629607}
-  <LayerDependencies>k__BackingField: []
-  <NodePosition>k__BackingField: {x: 93.600006, y: 97.6}
+  <NodePosition>k__BackingField: {x: 89, y: -18}
   <NodeGuid>k__BackingField: 212b817f54a91094a91ccb6dc09a9b36
   <IsLeafNode>k__BackingField: 1
   <ConnectedNodes>k__BackingField: []
@@ -180,8 +177,7 @@ MonoBehaviour:
   <LayerReference>k__BackingField:
     _layerTypeFullName: Rafasixteen.LayerC
   <LayerSettings>k__BackingField: {fileID: -5132809520829851864}
-  <LayerDependencies>k__BackingField: []
-  <NodePosition>k__BackingField: {x: 409.60004, y: 95.200005}
+  <NodePosition>k__BackingField: {x: 368, y: -18}
   <NodeGuid>k__BackingField: e5de26f237841b7428e17ef14cba2287
   <IsLeafNode>k__BackingField: 0
   <ConnectedNodes>k__BackingField: []

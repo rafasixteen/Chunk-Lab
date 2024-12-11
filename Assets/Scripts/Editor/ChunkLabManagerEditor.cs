@@ -33,7 +33,7 @@ namespace Rafasixteen.Editor.ChunkLab
                 serializedObject.ApplyModifiedProperties();
             }
 
-            LayerManagerWindow.Show(layerGraphData);
+            ChunkLabManagerWindow.Show(layerGraphData);
         }
     }
 }

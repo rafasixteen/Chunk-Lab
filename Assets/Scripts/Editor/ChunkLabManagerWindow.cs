@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 namespace Rafasixteen.Editor.ChunkLab
 {
-    public class LayerManagerWindow : EditorWindow
+    public class ChunkLabManagerWindow : EditorWindow
     {
         private LayerGraphView _graphView;
         private InspectorView _inspectorView;
@@ -22,7 +22,7 @@ namespace Rafasixteen.Editor.ChunkLab
             const int k_minWidth = 900;
             const float k_minHeight = k_minWidth / k_aspectRatio;
 
-            LayerManagerWindow window = GetWindow<LayerManagerWindow>();
+            ChunkLabManagerWindow window = GetWindow<ChunkLabManagerWindow>();
             window.minSize = new Vector2(k_minWidth, k_minHeight);
             window._graphView.Load(graphData);
         }
@@ -62,21 +62,10 @@ namespace Rafasixteen.Editor.ChunkLab
             {
                 _inspectorView.Inspect(node.Data.LayerSettings);
             }
-            else if (selectable is Edge edge)
-            {
-                _inspectorView.Inspect(FindDependencyFromEdge(edge));
-            }
             else
             {
                 _inspectorView.Inspect(null);
             }
-        }
-
-        private LayerDependencySettings FindDependencyFromEdge(Edge edge)
-        {
-            LayerNode inputNode = edge.input.node as LayerNode;
-            LayerNode outputNode = edge.output.node as LayerNode;
-            return outputNode.Data.LayerDependencies.Find(dependency => dependency.Dependency == inputNode.Data.LayerReference);
         }
 
         private StyleSheet LoadStyleSheetByGuid(string guid)
