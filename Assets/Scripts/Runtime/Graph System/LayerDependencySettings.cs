@@ -1,29 +1,23 @@
-﻿using Unity.Mathematics;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
-    public class LayerDependency : ScriptableObject
+    public class LayerDependencySettings : ScriptableObject
     {
-        [SerializeField] private int3 _padding;
+        [SerializeField] private LayerDependencyReference _dependencyReference;
 
         [field: SerializeField] public LayerReference Dependent { get; private set; }
         [field: SerializeField] public LayerReference Dependency { get; private set; }
 
-        public int3 Padding
-        {
-            get => _padding;
-            set => _padding = math.max(value, int3.zero);
-        }
+        public LayerDependencyReference LayerDependencyReference => _dependencyReference;
 
 #if UNITY_EDITOR
-        public static LayerDependency Create(LayerNodeData dependentNodeData, LayerNodeData dependencyNodeData)
+        public static LayerDependencySettings Create(LayerNodeData dependentNodeData, LayerNodeData dependencyNodeData)
         {
-            LayerDependency layerDependency = CreateInstance<LayerDependency>();
+            LayerDependencySettings layerDependency = CreateInstance<LayerDependencySettings>();
             layerDependency.Dependent = dependentNodeData.LayerReference;
             layerDependency.Dependency = dependencyNodeData.LayerReference;
-            layerDependency.Padding = int3.zero;
 
             layerDependency.name = $"{layerDependency.Dependent} -> {layerDependency.Dependency}";
 
@@ -33,7 +27,7 @@ namespace Rafasixteen.Runtime.ChunkLab
             return layerDependency;
         }
 
-        public static void Destroy(LayerDependency layerDependency)
+        public static void Destroy(LayerDependencySettings layerDependency)
         {
             AssetDatabase.RemoveObjectFromAsset(layerDependency);
             AssetDatabase.SaveAssets();

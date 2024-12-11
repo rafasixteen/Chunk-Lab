@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
-    public abstract class LayerBase
+    public abstract class LayerBase : ChunkLifecycle
     {
         #region FIELDS
 
@@ -87,71 +87,11 @@ namespace Rafasixteen.Runtime.ChunkLab
             }
         }
 
-        internal void OnChunkLoadedInternal(ChunkId chunkId)
-        {
-            using (ProfilerUtility.StartSample(Name, nameof(OnChunkLoadedInternal)))
-            {
-                OnChunkLoaded(chunkId);
-            }
-        }
-
-        internal void OnChunkUnloadedInternal(ChunkId chunkId)
-        {
-            using (ProfilerUtility.StartSample(Name, nameof(OnChunkUnloadedInternal)))
-            {
-                OnChunkUnloaded(chunkId);
-            }
-        }
-
-        internal void OnChunkLoadingInternal(ChunkId chunkId)
-        {
-            using (ProfilerUtility.StartSample(Name, nameof(OnChunkLoadingInternal)))
-            {
-                OnChunkLoading(chunkId);
-            }
-        }
-
-        internal void OnChunkUnloadingInternal(ChunkId chunkId)
-        {
-            using (ProfilerUtility.StartSample(Name, nameof(OnChunkUnloadingInternal)))
-            {
-                OnChunkUnloading(chunkId);
-            }
-        }
-
-        internal void OnChunkAwaitingLoadingInternal(ChunkId chunkId)
-        {
-            using (ProfilerUtility.StartSample(Name, nameof(OnChunkAwaitingLoadingInternal)))
-            {
-                OnChunkAwaitingLoading(chunkId);
-            }
-        }
-
-        internal void OnChunkAwaitingUnloadingInternal(ChunkId chunkId)
-        {
-            using (ProfilerUtility.StartSample(Name, nameof(OnChunkAwaitingUnloadingInternal)))
-            {
-                OnChunkAwaitingUnloading(chunkId);
-            }
-        }
-
         protected virtual void OnStart() { }
 
         protected virtual void OnDestroy() { }
 
         protected virtual void OnDrawGizmos() { }
-
-        protected virtual void OnChunkLoaded(ChunkId chunkId) { }
-
-        protected virtual void OnChunkUnloaded(ChunkId chunkId) { }
-
-        protected virtual void OnChunkLoading(ChunkId chunkId) { }
-
-        protected virtual void OnChunkUnloading(ChunkId chunkId) { }
-
-        protected virtual void OnChunkAwaitingLoading(ChunkId chunkId) { }
-
-        protected virtual void OnChunkAwaitingUnloading(ChunkId chunkId) { }
 
         #endregion
 
@@ -215,6 +155,18 @@ namespace Rafasixteen.Runtime.ChunkLab
 
                 Gizmos.color = GetChunkColor(state);
                 Gizmos.DrawWireCube(bounds.Center, bounds.Extents);
+
+//#if UNITY_EDITOR
+//                GUIStyle labelStyle = new()
+//                {
+//                    fontSize = 12,
+//                    normal = { textColor = Color.white },
+//                    alignment = TextAnchor.MiddleCenter,
+//                    fontStyle = FontStyle.Bold,
+//                };
+
+//                UnityEditor.Handles.Label(bounds.Center, chunkId.ToString(), labelStyle);
+//#endif
             }
         }
 

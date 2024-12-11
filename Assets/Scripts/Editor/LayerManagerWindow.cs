@@ -72,7 +72,7 @@ namespace Rafasixteen.Editor.ChunkLab
             }
         }
 
-        private LayerDependency FindDependencyFromEdge(Edge edge)
+        private LayerDependencySettings FindDependencyFromEdge(Edge edge)
         {
             LayerNode inputNode = edge.input.node as LayerNode;
             LayerNode outputNode = edge.output.node as LayerNode;

@@ -8,7 +8,7 @@ namespace Rafasixteen.Runtime.ChunkLab
     {
         [field: SerializeField] public LayerReference LayerReference { get; private set; }
         [field: SerializeField] public LayerSettings LayerSettings { get; private set; }
-        [field: SerializeField] public List<LayerDependency> LayerDependencies { get; private set; }
+        [field: SerializeField] public List<LayerDependencySettings> LayerDependencies { get; private set; }
 
         [field: SerializeField] public Vector2 NodePosition { get; set; }
         [field: SerializeField] public string NodeGuid { get; private set; }

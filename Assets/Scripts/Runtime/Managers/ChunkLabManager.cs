@@ -11,6 +11,9 @@ namespace Rafasixteen.Runtime.ChunkLab
         [SerializeField] private Transform _generationSource;
         [SerializeField, Range(1, 1024)] private int _maxChunksPerFrame = 32;
 
+        [SerializeField] private bool _enableVisualizer;
+        [SerializeField] private bool _enableLogger;
+
         #endregion
 
         #region PROPERTIES
@@ -54,11 +57,16 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         private void OnDrawGizmos()
         {
-            if (!Application.isPlaying)
+            if (!Application.isPlaying || !_enableVisualizer)
                 return;
 
             for (int i = 0; i < LayerManager.Count; i++)
                 LayerManager[i].OnDrawGizmosInternal();
+        }
+
+        private void OnValidate()
+        {
+            ChunkLabLogger.SetActive(_enableLogger);
         }
 
         #endregion

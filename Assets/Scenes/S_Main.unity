@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 1000
   _moveInterval: 20
-  _sphereRadius: 20
+  _sphereRadius: 200
   _lockYPosition: 1
 --- !u!1 &330585543
 GameObject:
@@ -512,12 +512,8 @@ MonoBehaviour:
   _layerGraphData: {fileID: 11400000, guid: 00fa269298c4c374d8aea26f3be77ce3, type: 2}
   _generationSource: {fileID: 268359157}
   _maxChunksPerFrame: 32
-  _layerReference:
-    _layerTypeFullName: Rafasixteen.LayerA
-  _coords:
-    x: 0
-    y: 0
-    z: 0
+  _enableVisualizer: 1
+  _enableLogger: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

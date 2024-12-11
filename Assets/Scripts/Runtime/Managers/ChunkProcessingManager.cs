@@ -1,6 +1,5 @@
 ﻿using System;
 using Unity.Mathematics;
-using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -19,7 +18,9 @@ namespace Rafasixteen.Runtime.ChunkLab
 
                 for (int i = 0; i < chunksToProcess; i++)
                 {
-                    ChunkId chunkId = ChunkSchedulerManager.Dequeue();
+                    if (!ChunkSchedulerManager.TryDequeue(out ChunkId chunkId))
+                        continue;
+
                     EChunkState chunkState = ChunkStateManager.GetState(chunkId);
 
                     switch (chunkState)

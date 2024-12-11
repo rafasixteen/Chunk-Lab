@@ -40,17 +40,17 @@ namespace Rafasixteen.Editor.ChunkLab
         public void ConnectTo(LayerNode node)
         {
             Data.ConnectedNodes.Add(node.Data);
-            Data.LayerDependencies.Add(LayerDependency.Create(Data, node.Data));
+            Data.LayerDependencies.Add(LayerDependencySettings.Create(Data, node.Data));
         }
 
         public void DisconnectFrom(LayerNode node)
         {
             Data.ConnectedNodes.Remove(node.Data);
 
-            LayerDependency layerDependency = Data.LayerDependencies.FirstOrDefault(dependency => dependency.Dependency == node.Data.LayerReference);
+            LayerDependencySettings layerDependency = Data.LayerDependencies.FirstOrDefault(dependency => dependency.Dependency == node.Data.LayerReference);
             
             Data.LayerDependencies.Remove(layerDependency);
-            LayerDependency.Destroy(layerDependency);
+            LayerDependencySettings.Destroy(layerDependency);
         }
 
         private void CreateInputPort()

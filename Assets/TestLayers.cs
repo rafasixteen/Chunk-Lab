@@ -1,4 +1,6 @@
 ﻿using Rafasixteen.Runtime.ChunkLab;
+using Unity.Collections;
+using Unity.Mathematics.Geometry;
 
 namespace Rafasixteen
 {
@@ -9,9 +11,11 @@ namespace Rafasixteen
         {
             LayerB layer = LayerManager.GetLayer<LayerB>();
 
-            ChunkId dependencyId = new(layer.Id, chunkId.Coords, layer.Settings.ChunkSize);
+            MinMaxAABB bounds = chunkId.Bounds.GetExpanded(chunkId.Size);
+            using NativeArray<ChunkId> dependencies = layer.GetChunkIdsWithinBounds(bounds, Allocator.Temp);
 
-            ChunkDependencyManager.AddDependency(chunkId, dependencyId);
+            ChunkId dependencyId = new(layer.Id, chunkId.Coords, layer.Settings.ChunkSize);
+            ChunkDependencyManager.AddDependencies(chunkId, dependencies);
         }
 
         public class Chunk : Chunk<Chunk, LayerA>
@@ -34,9 +38,11 @@ namespace Rafasixteen
         {
             LayerC layer = LayerManager.GetLayer<LayerC>();
 
-            ChunkId dependencyId = new(layer.Id, chunkId.Coords, layer.Settings.ChunkSize);
+            MinMaxAABB bounds = chunkId.Bounds.GetExpanded(chunkId.Size);
+            using NativeArray<ChunkId> dependencies = layer.GetChunkIdsWithinBounds(bounds, Allocator.Temp);
 
-            ChunkDependencyManager.AddDependency(chunkId, dependencyId);
+            ChunkId dependencyId = new(layer.Id, chunkId.Coords, layer.Settings.ChunkSize);
+            ChunkDependencyManager.AddDependencies(chunkId, dependencies);
         }
 
         public class Chunk : Chunk<Chunk, LayerB>
@@ -59,9 +65,11 @@ namespace Rafasixteen
         {
             LayerD layer = LayerManager.GetLayer<LayerD>();
 
-            ChunkId dependencyId = new(layer.Id, chunkId.Coords, layer.Settings.ChunkSize);
+            MinMaxAABB bounds = chunkId.Bounds.GetExpanded(chunkId.Size);
+            using NativeArray<ChunkId> dependencies = layer.GetChunkIdsWithinBounds(bounds, Allocator.Temp);
 
-            ChunkDependencyManager.AddDependency(chunkId, dependencyId);
+            ChunkId dependencyId = new(layer.Id, chunkId.Coords, layer.Settings.ChunkSize);
+            ChunkDependencyManager.AddDependencies(chunkId, dependencies);
         }
 
         public class Chunk : Chunk<Chunk, LayerC>

@@ -1,5 +1,6 @@
 ﻿using System;
 using Unity.Collections;
+using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -7,13 +8,11 @@ namespace Rafasixteen.Runtime.ChunkLab
     {
         private NativeQueue<ChunkId> _queue;
         private NativeHashSet<ChunkId> _inQueue;
-        private NativeHashSet<ChunkId> _removedFromQueue;
 
         public ChunkSchedulerManager()
         {
             _queue = new(Allocator.Persistent);
             _inQueue = new(1, Allocator.Persistent);
-            _removedFromQueue = new(1, Allocator.Persistent);
         }
 
         public ChunkStateManager ChunkStateManager { get; set; }
@@ -88,8 +87,13 @@ namespace Rafasixteen.Runtime.ChunkLab
                         ChunkStateManager.RemoveState(chunkId);
                         RemoveFromQueue(chunkId);
                         break;
+                    case EChunkState.AwaitingUnloading:
+                        // Still don't know why this is happening.
+                        // This temporary fix is from 11/12/2024.
+                        Enqueue(chunkId);
+                        break;
                     default:
-                        throw new InvalidOperationException($"Cannot transition from {currentState} to {EChunkState.AwaitingUnloading}.");
+                        throw new InvalidOperationException($"Chunk {chunkId} cannot transition from {currentState} to {EChunkState.AwaitingUnloading}.");
                 }
             }
         }
@@ -106,25 +110,32 @@ namespace Rafasixteen.Runtime.ChunkLab
                     case EChunkState.AwaitingUnloading:
                         ChunkStateManager.SetState(chunkId, EChunkState.AwaitingLoading);
                         break;
+                    case EChunkState.Loaded:
+                        // This happens when a chunk with some dependencies that are already loaded
+                        // it will still need for it's other dependencies to load, and it will schedule
+                        // all dependencies, even the ones that are already loaded, when that happens,
+                        // we catch that here and can just ignore it.
+                        break;
                     default:
-                        throw new InvalidOperationException($"Cannot transition from {currentState} to {EChunkState.AwaitingLoading}.");
+                        throw new InvalidOperationException($"Chunk {chunkId} cannot transition from {currentState} to {EChunkState.AwaitingLoading}.");
                 }
             }
         }
 
-        public ChunkId Dequeue()
+        public bool TryDequeue(out ChunkId chunkId)
         {
-            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(Dequeue)))
+            using (ProfilerUtility.StartSample(nameof(ChunkSchedulerManager), nameof(TryDequeue)))
             {
                 while (_queue.Count > 0)
                 {
-                    ChunkId chunkId = _queue.Dequeue();
+                    chunkId = _queue.Dequeue();
 
                     if (_inQueue.Remove(chunkId))
-                        return chunkId;
+                        return true;
                 }
 
-                throw new InvalidOperationException("No chunk available in the queue.");
+                chunkId = default;
+                return false;
             }
         }
 
@@ -134,7 +145,6 @@ namespace Rafasixteen.Runtime.ChunkLab
             {
                 _queue.Dispose();
                 _inQueue.Dispose();
-                _removedFromQueue.Dispose();
             }
         }
 

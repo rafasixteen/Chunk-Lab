@@ -4,12 +4,21 @@ using UnityEngine;
 
 namespace Rafasixteen.Editor.ChunkLab
 {
-    [CustomEditor(typeof(LayerDependency))]
-    public class LayerDependencyEditor : UnityEditor.Editor
+    [CustomEditor(typeof(LayerDependencySettings))]
+    public class LayerDependencySettingsEditor : UnityEditor.Editor
     {
+        private SerializedProperty _dependencyReference;
+
+        private void OnEnable()
+        {
+            _dependencyReference = serializedObject.FindProperty("_dependencyReference");
+        }
+
         public override void OnInspectorGUI()
         {
-            LayerDependency layerDependency = (LayerDependency)target;
+            serializedObject.Update();
+
+            LayerDependencySettings layerDependency = (LayerDependencySettings)target;
 
             EditorGUILayout.Space();
 
@@ -20,15 +29,7 @@ namespace Rafasixteen.Editor.ChunkLab
 
             EditorGUILayout.Space();
 
-            Vector3Int value = new(layerDependency.Padding.x, layerDependency.Padding.y, layerDependency.Padding.z);
-            value = EditorGUILayout.Vector3IntField("Padding", value);
-            layerDependency.Padding = new(value.x, value.y, value.z);
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.HelpBox(
-                $"The padding ensures that chunks from {layerDependency.Dependency} are properly generated around the {layerDependency.Dependent} chunks.",
-                MessageType.Info);
+            EditorGUILayout.PropertyField(_dependencyReference, new GUIContent("Dependency Reference"));
 
             serializedObject.ApplyModifiedProperties();
 

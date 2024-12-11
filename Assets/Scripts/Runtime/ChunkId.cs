@@ -1,5 +1,6 @@
 ﻿using System;
 using Unity.Mathematics;
+using Unity.Mathematics.Geometry;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -17,6 +18,10 @@ namespace Rafasixteen.Runtime.ChunkLab
         public int3 Coords { get; }
 
         public int3 Size { get; }
+
+        public int3 Position => Coords * Size;
+
+        public MinMaxAABB Bounds => new(Position, Position + Size);
 
         public bool Equals(ChunkId other)
         {
