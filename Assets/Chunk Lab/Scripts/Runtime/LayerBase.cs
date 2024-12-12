@@ -95,28 +95,37 @@ namespace Rafasixteen.Runtime.ChunkLab
 
         #endregion
 
-        internal bool HasChunk(ChunkId chunkId)
+        public bool HasChunk(ChunkId chunkId)
         {
-            using (ProfilerUtility.StartSample(Name, nameof(HasChunk)))
-            {
-                return _chunkDictionary.ContainsKey(chunkId);
-            }
+            return _chunkDictionary.ContainsKey(chunkId);
         }
 
-        internal bool TryGetChunk(ChunkId chunkId, out ChunkBase chunk)
+        public bool HasChunk(int3 chunkCoords)
         {
-            using (ProfilerUtility.StartSample(Name, nameof(TryGetChunk)))
-            {
-                return _chunkDictionary.TryGetValue(chunkId, out chunk);
-            }
+            ChunkId chunkId = new(Id, chunkCoords, Settings.ChunkSize);
+            return HasChunk(chunkId);
         }
 
-        internal ChunkBase GetChunk(ChunkId chunkId)
+        public bool TryGetChunk(ChunkId chunkId, out ChunkBase chunk)
         {
-            using (ProfilerUtility.StartSample(Name, nameof(GetChunk)))
-            {
-                return _chunkDictionary[chunkId];
-            }
+            return _chunkDictionary.TryGetValue(chunkId, out chunk);
+        }
+
+        public bool TryGetChunk(int3 chunkCoords, out ChunkBase chunk)
+        {
+            ChunkId chunkId = new(Id, chunkCoords, Settings.ChunkSize);
+            return TryGetChunk(chunkId, out chunk);
+        }
+
+        public ChunkBase GetChunk(ChunkId chunkId)
+        {
+            return _chunkDictionary[chunkId];
+        }
+
+        public ChunkBase GetChunk(int3 chunkCoords)
+        {
+            ChunkId chunkId = new(Id, chunkCoords, Settings.ChunkSize);
+            return GetChunk(chunkId);
         }
 
         internal ChunkBase CreateChunk(ChunkId chunkId)
@@ -155,18 +164,6 @@ namespace Rafasixteen.Runtime.ChunkLab
 
                 Gizmos.color = GetChunkColor(state);
                 Gizmos.DrawWireCube(bounds.Center, bounds.Extents);
-
-//#if UNITY_EDITOR
-//                GUIStyle labelStyle = new()
-//                {
-//                    fontSize = 12,
-//                    normal = { textColor = Color.white },
-//                    alignment = TextAnchor.MiddleCenter,
-//                    fontStyle = FontStyle.Bold,
-//                };
-
-//                UnityEditor.Handles.Label(bounds.Center, chunkId.ToString(), labelStyle);
-//#endif
             }
         }
 

@@ -9,6 +9,22 @@
       },
       "hash": "3b09b8ef18954c2a16452620bd502770e8a4a35d"
     },
+    "com.rafasixteen.jobmanager": {
+      "version": "https://github.com/rafasixteen/Job-Manager.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.rafasixteen.singletons": "2.0.1"
+      },
+      "hash": "1b4dafdf81bde2ab974ca139b6cc952792c6ec26"
+    },
+    "com.rafasixteen.singletons": {
+      "version": "https://github.com/rafasixteen/Singletons.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a0dfdc7f15d50b6d3070aa91a5567a04abbf9043"
+    },
     "com.unity.burst": {
       "version": "1.8.18",
       "depth": 0,

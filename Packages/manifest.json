@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "com.andywiecko.burst.collections": "https://github.com/andywiecko/BurstCollections.git#v1.7.1",
+    "com.rafasixteen.jobmanager": "https://github.com/rafasixteen/Job-Manager.git",
+    "com.rafasixteen.singletons": "https://github.com/rafasixteen/Singletons.git",
     "com.unity.burst": "1.8.18",
     "com.unity.collections": "2.5.1",
     "com.unity.entities": "1.3.8",
