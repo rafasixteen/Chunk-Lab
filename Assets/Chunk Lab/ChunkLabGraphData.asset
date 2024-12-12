@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7603444326374817232
+--- !u!114 &-7919260191843069043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14,114 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <LayerReference>k__BackingField:
     _layerTypeFullName: Rafasixteen.LayerD
-  <LayerSettings>k__BackingField: {fileID: 873612416405325771}
-  <NodePosition>k__BackingField: {x: 525, y: -18}
-  <NodeGuid>k__BackingField: a6503ac2a3f09cd4f9f579baddb962e0
+  <LayerSettings>k__BackingField: {fileID: -164166875061100979}
+  <NodePosition>k__BackingField: {x: 529, y: 174}
+  <NodeGuid>k__BackingField: d2bf442d0b68986418def626df4e131a
   <IsLeafNode>k__BackingField: 0
   <ConnectedNodes>k__BackingField: []
---- !u!114 &-5132809520829851864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
-  m_Name: LayerC Settings
-  m_EditorClassIdentifier: 
-  _chunkSize:
-    x: 32
-    y: 32
-    z: 32
-  _enableVisualization: 1
-  _visualizationSettings: 3
-  _color: {r: 0, g: 1, b: 0, a: 1}
-  _creating: {r: 0, g: 0, b: 1, a: 1}
-  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &-4911550688618629607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
-  m_Name: LayerA Settings
-  m_EditorClassIdentifier: 
-  _chunkSize:
-    x: 8
-    y: 8
-    z: 8
-  _enableVisualization: 1
-  _visualizationSettings: 3
-  _color: {r: 0, g: 1, b: 0, a: 1}
-  _creating: {r: 0, g: 0, b: 1, a: 1}
-  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &-138788769722287966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a35680aff98f6f4b8c414e12f6f84aa, type: 3}
-  m_Name: LayerB
-  m_EditorClassIdentifier: 
-  <LayerReference>k__BackingField:
-    _layerTypeFullName: Rafasixteen.LayerB
-  <LayerSettings>k__BackingField: {fileID: 1515590328771800467}
-  <NodePosition>k__BackingField: {x: 209, y: -18}
-  <NodeGuid>k__BackingField: fceecd76bc928e04ca6b3026bfd322bc
-  <IsLeafNode>k__BackingField: 0
-  <ConnectedNodes>k__BackingField: []
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4050e173667eff043b0bfe616a386bbb, type: 3}
-  m_Name: LayerGraphData
-  m_EditorClassIdentifier: 
-  <Nodes>k__BackingField:
-  - {fileID: 4910768620426378617}
-  - {fileID: -138788769722287966}
-  - {fileID: 6387150207853480179}
-  - {fileID: -7603444326374817232}
---- !u!114 &873612416405325771
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
-  m_Name: LayerD Settings
-  m_EditorClassIdentifier: 
-  _chunkSize:
-    x: 64
-    y: 64
-    z: 64
-  _enableVisualization: 1
-  _visualizationSettings: 3
-  _color: {r: 0, g: 1, b: 0, a: 1}
-  _creating: {r: 0, g: 0, b: 1, a: 1}
-  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &1515590328771800467
+--- !u!114 &-7582055486636276038
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,7 +41,7 @@ MonoBehaviour:
   _creating: {r: 0, g: 0, b: 1, a: 1}
   _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &4910768620426378617
+--- !u!114 &-5054613426504158240
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,17 +50,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a35680aff98f6f4b8c414e12f6f84aa, type: 3}
-  m_Name: LayerA
+  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
+  m_Name: LayerC Settings
   m_EditorClassIdentifier: 
-  <LayerReference>k__BackingField:
-    _layerTypeFullName: Rafasixteen.LayerA
-  <LayerSettings>k__BackingField: {fileID: -4911550688618629607}
-  <NodePosition>k__BackingField: {x: 89, y: -18}
-  <NodeGuid>k__BackingField: 212b817f54a91094a91ccb6dc09a9b36
-  <IsLeafNode>k__BackingField: 1
-  <ConnectedNodes>k__BackingField: []
---- !u!114 &6387150207853480179
+  _chunkSize:
+    x: 32
+    y: 32
+    z: 32
+  _enableVisualization: 1
+  _visualizationSettings: 3
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _creating: {r: 0, g: 0, b: 1, a: 1}
+  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &-3432455733573189510
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,8 +77,107 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <LayerReference>k__BackingField:
     _layerTypeFullName: Rafasixteen.LayerC
-  <LayerSettings>k__BackingField: {fileID: -5132809520829851864}
-  <NodePosition>k__BackingField: {x: 368, y: -18}
-  <NodeGuid>k__BackingField: e5de26f237841b7428e17ef14cba2287
+  <LayerSettings>k__BackingField: {fileID: -5054613426504158240}
+  <NodePosition>k__BackingField: {x: 393, y: 174}
+  <NodeGuid>k__BackingField: 99459a859107b9c4eb0428a558d6757e
   <IsLeafNode>k__BackingField: 0
+  <ConnectedNodes>k__BackingField: []
+--- !u!114 &-3106438030057052145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
+  m_Name: LayerA Settings
+  m_EditorClassIdentifier: 
+  _chunkSize:
+    x: 8
+    y: 8
+    z: 8
+  _enableVisualization: 1
+  _visualizationSettings: 3
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _creating: {r: 0, g: 0, b: 1, a: 1}
+  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &-164166875061100979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c049bc08d27e6a41a061897411c4919, type: 3}
+  m_Name: LayerD Settings
+  m_EditorClassIdentifier: 
+  _chunkSize:
+    x: 64
+    y: 64
+    z: 64
+  _enableVisualization: 1
+  _visualizationSettings: 3
+  _color: {r: 0, g: 1, b: 0, a: 1}
+  _creating: {r: 0, g: 0, b: 1, a: 1}
+  _pendingCreation: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _pendingDestruction: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4050e173667eff043b0bfe616a386bbb, type: 3}
+  m_Name: ChunkLabGraphData
+  m_EditorClassIdentifier: 
+  <Nodes>k__BackingField:
+  - {fileID: 9145032432150873786}
+  - {fileID: 7270492825747537806}
+  - {fileID: -3432455733573189510}
+  - {fileID: -7919260191843069043}
+--- !u!114 &7270492825747537806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a35680aff98f6f4b8c414e12f6f84aa, type: 3}
+  m_Name: LayerB
+  m_EditorClassIdentifier: 
+  <LayerReference>k__BackingField:
+    _layerTypeFullName: Rafasixteen.LayerB
+  <LayerSettings>k__BackingField: {fileID: -7582055486636276038}
+  <NodePosition>k__BackingField: {x: 257, y: 174}
+  <NodeGuid>k__BackingField: 5fcc955c02399f941afea30e80d7f3fa
+  <IsLeafNode>k__BackingField: 0
+  <ConnectedNodes>k__BackingField: []
+--- !u!114 &9145032432150873786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a35680aff98f6f4b8c414e12f6f84aa, type: 3}
+  m_Name: LayerA
+  m_EditorClassIdentifier: 
+  <LayerReference>k__BackingField:
+    _layerTypeFullName: Rafasixteen.LayerA
+  <LayerSettings>k__BackingField: {fileID: -3106438030057052145}
+  <NodePosition>k__BackingField: {x: 161, y: 174}
+  <NodeGuid>k__BackingField: db8372116f54a5d479bee9e3914f6dd8
+  <IsLeafNode>k__BackingField: 1
   <ConnectedNodes>k__BackingField: []
