@@ -146,13 +146,12 @@ namespace Rafasixteen.Runtime.ProceduralTerrain
                         int edgeMask = _edgeTable[cornerMask];
 
                         float3 vertice = float3.zero;
-                        float3 scale = ChunkUtility.GetVerticeScaleFactor(chunkData.Size, _resolution);
 
                         if (SmoothVertices)
                             vertice = GetVerticePositionWithinCell(cell, edgeMask);
 
                         vertice += localIndex;
-                        vertice *= scale;
+                        vertice *= ChunkUtility.GetVerticeScaleFactor(chunkData.Size, _resolution);
 
                         buffer[bufferIndex] = (uint)_vertices.Length;
                         _vertices.Add(vertice);

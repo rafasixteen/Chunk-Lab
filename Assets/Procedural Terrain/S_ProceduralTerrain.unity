@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 544426823}
   - component: {fileID: 544426824}
+  - component: {fileID: 544426825}
   m_Layer: 0
   m_Name: Chunk Lab Manager
   m_TagString: Untagged
@@ -167,7 +168,24 @@ MonoBehaviour:
   _generationSource: {fileID: 1627930872}
   _maxChunksPerFrame: 32
   _enableVisualizer: 1
-  _enableLogger: 0
+  _enableLogger: 1
+--- !u!114 &544426825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 544426822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596a80a344ef0a24dbfc081d3a722013, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _voxelGenerator: {fileID: 7200000, guid: e37c7999ee09ebc42afde97988021293, type: 3}
+  _readbackTexture: {fileID: 8400000, guid: 1c7fe7946b99d6a48a930aac39bbad95, type: 2}
+  _chunkPrefab: {fileID: 7317723439261332693, guid: 705eeb06b4ec92342903e25532411dc9, type: 3}
+  _meshingOptions: 3
+  _isoLevel: 0
 --- !u!1 &1414681316
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,6 +453,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1627930872}
+  - component: {fileID: 1627930873}
   m_Layer: 0
   m_Name: Source
   m_TagString: Untagged
@@ -457,6 +476,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1627930873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627930871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 610b81bf027c01b41bf2ce2b5a469992, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 100
+  _moveInterval: 20
+  _sphereRadius: 100
+  _lockYPosition: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

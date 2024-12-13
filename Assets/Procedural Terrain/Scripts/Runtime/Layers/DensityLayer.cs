@@ -16,16 +16,13 @@ namespace Rafasixteen.Runtime.ProceduralTerrain
 
             TerrainManager = terrainManager;
         }
-
-        protected override void OnChunkAwaitingLoading(ChunkId chunkId)
-        {
-
-        }
     }
 
     public class DensityLayerChunk : Chunk<DensityLayerChunk, DensityLayer>
     {
         private NativeArray<float> _densities;
+
+        public NativeArray<float>.ReadOnly Densities => _densities.AsReadOnly();
 
         protected override void StartLoading()
         {

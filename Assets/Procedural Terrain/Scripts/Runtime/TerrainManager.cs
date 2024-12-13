@@ -25,7 +25,6 @@ namespace Rafasixteen.Runtime.ProceduralTerrain
         [SerializeField] private ChunkObject _chunkPrefab;
         [SerializeField] private EMeshingOptions _meshingOptions;
         [SerializeField] private float _isoLevel;
-        [SerializeField] private bool _drawGizmos;
 
         #endregion
 

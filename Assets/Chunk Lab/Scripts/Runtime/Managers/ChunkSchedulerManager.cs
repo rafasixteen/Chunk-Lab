@@ -1,6 +1,5 @@
 ﻿using System;
 using Unity.Collections;
-using UnityEngine;
 
 namespace Rafasixteen.Runtime.ChunkLab
 {
@@ -92,6 +91,9 @@ namespace Rafasixteen.Runtime.ChunkLab
                         // This temporary fix is from 11/12/2024.
                         Enqueue(chunkId);
                         break;
+                    case EChunkState.Loading:
+                        ChunkStateManager.SetDeferredState(chunkId, EChunkState.AwaitingUnloading);
+                        break;
                     default:
                         throw new InvalidOperationException($"Chunk {chunkId} cannot transition from {currentState} to {EChunkState.AwaitingUnloading}.");
                 }
@@ -115,6 +117,9 @@ namespace Rafasixteen.Runtime.ChunkLab
                         // it will still need for it's other dependencies to load, and it will schedule
                         // all dependencies, even the ones that are already loaded, when that happens,
                         // we catch that here and can just ignore it.
+                        break;
+                    case EChunkState.Loading:
+                        // Why??
                         break;
                     default:
                         throw new InvalidOperationException($"Chunk {chunkId} cannot transition from {currentState} to {EChunkState.AwaitingLoading}.");

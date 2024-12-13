@@ -1,0 +1,45 @@
+﻿#pragma kernel Generate
+
+#include "FastNoiseLite.hlsl"
+#include "VoxelUtilities.hlsl"
+
+static const uint numThreads = 1;
+
+int3 chunkCoords;
+uint3 chunkSize;
+uint3 chunkResolution;
+
+RWTexture3D<float> densities;
+
+void VoxelAtV1(float3 samplePosition, out float density)
+{
+    fnl_state noise = fnlCreateState(10026);
+    
+    noise.noise_type = FNL_NOISE_PERLIN;
+    noise.fractal_type = FNL_FRACTAL_FBM;
+    noise.octaves = 5;
+    noise.frequency = 0.01f;
+    noise.gain = 0.5f;
+    noise.lacunarity = 2.0f;
+
+    density = fnlGetNoise3D(noise, samplePosition.x, samplePosition.y, samplePosition.z);
+    density *= 20.0f;
+    density += samplePosition.y;
+}
+
+void VoxelAtV2(float3 samplePosition, out float density)
+{
+    density = samplePosition.y;
+}
+
+[numthreads(numThreads, numThreads, numThreads)]
+void Generate(uint3 id : SV_DispatchThreadID)
+{
+    float3 chunkPosition = (float3) chunkCoords * (float3) chunkSize;
+    float3 samplePosition = Scale((float3) id, chunkSize, chunkResolution) + chunkPosition;
+    
+    float density;
+    VoxelAtV2(samplePosition, density);
+
+    densities[id] = density;
+}
